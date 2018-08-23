@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Pactera.BG5.mapper.UserMapper">
+
+    <resultMap id="user" type="Pactera.BG5.entity.User">
+        <result property="u_Id" column="E_ID"/>
+        <result property="u_Name" column="E_NAME"/>
+        <result property="u_Number" column="E_NUMBER"/>
+        <result property="u_Group" column="E_GROUP"/>
+        <result property="u_Email" column="E_EMAIL"/>
+        <result property="u_Gender" column="E_GENDER"/>
+        <result property="u_Mobilephone" column="E_MOBILEPHONE"/>
+        <result property="u_Role" column="E_ROLE"/>
+        <result property="u_Login_Pass" column="E_LOGIN_PASS"/>
+        <result property="open_Id" column="OPEN_ID"/>
+        <result property="create_Id" column="CREATE_ID"/>
+        <result property="create_Date" column="CREATE_DATE"/>
+        <result property="update_Id" column="UPDATE_ID"/>
+        <result property="update_Date" column="UPDATE_DATE"/>
+        <result property="del_Flg" column="DEL_FLG"/>
+    </resultMap>
+
+    <!-- all user select-->
+    <select id="allSearch" resultMap="user">
+    select * from t_employee
+  </select>
+
+    <!--条件查询-->
+    <select id="getCondition" resultMap="user" parameterType="Map">
+        select * from t_employee
+        where
+        '1'= '1'
+        <if test="user_name !=''">
+            AND E_NAME LIKE CONCAT('%',#{user_name},'%' )
+        </if>
+        <if test="number !=''">
+            AND E_NUMBER =#{number}
+        </if>
+        <if test="group !=''">
+            AND E_GROUP =#{group}
+        </if>
+    </select>
+
+
+    <!--删除用户-->
+    <update id="deleteUser" parameterType="user">
+        update t_employee
+        set
+        UPDATE_DATE=current_timestamp,
+        DEL_FLG = '1'
+        where
+        <if test="u_Id !=null">
+            E_ID=#{u_Id}
+        </if>
+    </update>
+
+
+    <!--插入用户-->
+    <insert id="insertUser" parameterType="User">
+        <selectKey resultType="int" keyProperty="u_Id">
+            SELECT @@IDENTITY AS u_Id
+        </selectKey>
+        insert into t_employee (
+        E_ID,
+        E_NAME,
+        E_NUMBER,
+        E_GROUP,
+        E_EMAIL,
+        E_GENDER,
+        E_MOBILEPHONE,
+        CREATE_ID,
+        CREATE_DATE,
+        UPDATE_ID,
+        UPDATE_DATE,
+        DEL_FLG)
+        values(
+        #{u_Id},
+        #{u_Name},
+        #{u_Number},
+        #{u_Group},
+        #{u_Email},
+        #{u_Gender},
+        #{u_Mobilephone},
+        #{create_Id},
+        current_timestamp,
+        null,
+        null,
+        0)
+    </insert>
+
+    <!--修改用户表-->
+    <update id="updateUser" parameterType="user">
+        update t_employee
+        set
+        <if test="u_Name !=null">
+            E_NAME = #{u_Name},
+        </if>
+        <if test="u_Number !=null">
+            E_NUMBER= #{u_Number},
+        </if>
+        <if test="u_Group !=null">
+            E_GROUP = #{u_Group},
+        </if>
+        <if test="u_Email !=null">
+            E_EMAIL = #{u_Email},
+        </if>
+        <if test="u_Gender !=null">
+            E_GENDER = #{u_Gender},
+        </if>
+        <if test="u_Mobilephone !=null">
+            E_MOBILEPHONE = #{u_Mobilephone},
+        </if>
+        <if test="open_Id !=null">
+            OPEN_ID = #{open_Id},
+        </if>
+        UPDATE_ID=#{update_Id},
+        UPDATE_DATE=current_timestamp
+        where
+        1=1
+        <if test="u_Id !=0">
+            AND E_ID=#{u_Id}
+        </if>
+        <if test="u_Number !=null">
+            AND E_NUMBER=#{u_Number}
+        </if>
+    </update>
+
+    <select id="getUserById" resultMap="user" parameterType="Map">
+    select * from t_employee 
+    where E_ID =#{u_Id}
+    limit 1
+  </select>
+
+    <select id="getUserByENo" resultMap="user" parameterType="Map">
+        select * from t_employee
+        where E_NUMBER =#{u_No}
+        limit 1
+    </select>
+    
+    <select id="userLogin" resultMap="user" parameterType="Map">
+        select * from t_employee
+        where E_NUMBER =#{u_No} and
+        E_LOGIN_PASS =#{u_Pass}
+        limit 1
+    </select>
+    
+    <select id="getUserByOpenId" resultMap="user" parameterType="Map">
+        select * from t_employee
+        where OPEN_ID =#{openId}
+        limit 1
+    </select>
+</mapper>
