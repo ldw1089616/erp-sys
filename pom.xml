@@ -8,12 +8,18 @@
     <artifactId>erp-sys</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.4.RELEASE</version>
+    </parent>
     <modules>
         <module>web-api</module>
         <module>user-client</module>
         <module>web-api-1</module>
         <module>eureka-server-1</module>
+        <module>zuul-1</module>
+        <module>oauth-server</module>
     </modules>
 
 
